@@ -17,13 +17,13 @@ public class FacultyController {
         this.service = service;
     }
 
-    //C
+    //Create
     @PostMapping("/add/{name},{color}")
     public Faculty addFaculty(@PathVariable("name") String name, @PathVariable("color") String color) {
         return service.addFaculty(name, color);
     }
 
-    //R
+    //Read
     @GetMapping("")
     public List<Faculty> getAllFaculty() {
         return service.getAllFaculty();
@@ -35,25 +35,22 @@ public class FacultyController {
         return service.findById(id);
     }
 
-
     @GetMapping("/search/color")
     public List<Faculty> searchByColor(@RequestParam("color") String color) {
         return service.searchByColor(color);
     }
 
-
-    //U
+    //Update
     @PutMapping("/change/{id}")
     public Faculty changeFaculty(@RequestBody Faculty faculty) {
         return service.changeFaculty(faculty);
     }
 
-    //D
+    //Delete
     @DeleteMapping("/delete")
     public void deleteFaculty(long id) {
         service.deleteFaculty(id);
     }
-
 
 }
 

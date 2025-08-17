@@ -1,76 +1,66 @@
 package ru.hogwarts.school.service;
 
 import org.springframework.stereotype.Service;
-
 import ru.hogwarts.school.exceptions.NotFoundException;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.repository.StudentRepository;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class StudentService {
-    private final Map<Long, Student> studentMap;
-    private static long count;
+    private final StudentRepository studentRepository;
 
-    public StudentService() {
-
-        this.studentMap = new HashMap<>();
+    public StudentService(StudentRepository studentRepository) {
+        this.studentRepository = studentRepository;
         setDefaultValues();
-
     }
 
     private void setDefaultValues() {
-        addStudent("qwert", 10);
-        addStudent("asdfg", 20);
-        addStudent("zxcvb", 30);
+        if (studentRepository.count() == 0) {
+            addStudent("Harry Potter", 15);
+            addStudent("Luna Lovegood", 15);
+            addStudent("Draco Malfoy", 15);
+            addStudent("Susan Bones", 15);
+        }
     }
 
 
     //CREATE
     public Student addStudent(String name, int age) {
-        Student student = new Student(count, name, age);
-        studentMap.put(count++, student);
-        return student;
+        return studentRepository.save(new Student(name, age));
     }
 
     //READ
-    public Student findById(long id) {
-        if (studentMap.containsKey(id)) {
-            return studentMap.get(id);
-        }
-        throw new NotFoundException("Нет такого студента");
+    public Student findById(Long id) {
+        return studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Нет студента c таким id"));
     }
 
     public List<Student> searchByAge(int age) {
-        return studentMap
-                .values()
-                .stream()
-                .filter(student -> student.getAge() == age)
-                .collect(Collectors.toList());
+        return studentRepository.findByAge(age);
     }
 
     public List<Student> getAllStudent() {
-        return new LinkedList<>(studentMap.values());
+        return studentRepository.findAll();
     }
 
     //UPDATE
     public Student changeStudent(Student student) {
-        if (studentMap.containsKey(student.getId())) {
-            studentMap.put(student.getId(), student);
+        Optional<Student> obj = studentRepository.findById(student.getId());
+        if (obj.isPresent()) {
+            studentRepository.save(student);
             return student;
         }
-        throw new NotFoundException("Нет такого студента");
+        throw new NotFoundException("Нет студента c таким id");
     }
 
     //DELETE
     public Student deleteStudent(long id) {
-        if (studentMap.containsKey(id)) {
-            Student student = studentMap.get(id);
-            studentMap.remove(id);
-            return student;
+        Optional<Student> obj = studentRepository.findById(id);
+        if (obj.isPresent()) {
+            studentRepository.delete(obj.get());
+            return obj.get();
         }
-        throw new NotFoundException("Нет такого студента");
+        throw new NotFoundException("Нет студента c таким id");
     }
-
 }

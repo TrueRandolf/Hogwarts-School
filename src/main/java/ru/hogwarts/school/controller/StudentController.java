@@ -17,19 +17,18 @@ public class StudentController {
         this.service = service;
     }
 
-    //C
+    //Create
     @PostMapping("/add/{name},{age}")
     public Student addStudent(@PathVariable("name") String name, @PathVariable("age") int age) {
         return service.addStudent(name, age);
     }
 
-    //R
+    //Read
     @GetMapping("")
     public List<Student> getAllStudent() {
         return service.getAllStudent();
     }
 
-    // ТОЛЬКО ФИЛЬТРЫ ЧЕРЕЗ REQUESTPARAM !!!!
     @GetMapping("/search/id")
     public Student findById(@RequestParam("id") long id) {
         return service.findById(id);
@@ -40,18 +39,16 @@ public class StudentController {
         return service.searchByAge(age);
     }
 
-    //U
+    //Update
     @PutMapping("/change")
     public Student changeStudent(@RequestBody Student student) {
         return service.changeStudent(student);
     }
 
-
-    //D
+    //Delete
     @DeleteMapping("/delete")
     public void deleteStudent(@RequestParam("id") long id) {
         service.deleteStudent(id);
     }
-
 
 }
