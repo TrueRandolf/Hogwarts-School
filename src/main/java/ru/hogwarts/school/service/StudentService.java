@@ -18,17 +18,17 @@ public class StudentService {
 
     private void setDefaultValues() {
         if (studentRepository.count() == 0) {
-            addStudent("Harry Potter", 15);
-            addStudent("Luna Lovegood", 15);
-            addStudent("Draco Malfoy", 15);
-            addStudent("Susan Bones", 15);
+            addStudent(new Student("Harry Potter", 15));
+            addStudent(new Student("Luna Lovegood", 15));
+            addStudent(new Student("Draco Malfoy", 15));
+            addStudent(new Student("Susan Bones", 15));
         }
     }
 
 
     //CREATE
-    public Student addStudent(String name, int age) {
-        return studentRepository.save(new Student(name, age));
+    public Student addStudent(Student student) {
+        return studentRepository.save(student);
     }
 
     //READ

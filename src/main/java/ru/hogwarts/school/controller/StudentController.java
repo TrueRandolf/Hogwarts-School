@@ -17,37 +17,41 @@ public class StudentController {
         this.service = service;
     }
 
+
     //Create
-    @PostMapping("/add/{name},{age}")
-    public Student addStudent(@PathVariable("name") String name, @PathVariable("age") int age) {
-        return service.addStudent(name, age);
+    @PostMapping
+    public Student addStudent(@RequestBody Student student) {
+        return service.addStudent(student);
     }
 
+
     //Read
-    @GetMapping("")
+    @GetMapping
     public List<Student> getAllStudent() {
         return service.getAllStudent();
     }
 
-    @GetMapping("/search/id")
-    public Student findById(@RequestParam("id") long id) {
+
+    @GetMapping("id ")
+    public Student findById(@RequestParam long id) {
         return service.findById(id);
     }
 
-    @GetMapping("/search/age")
+    @GetMapping("search")
     public List<Student> searchByAge(@RequestParam("age") int age) {
         return service.searchByAge(age);
     }
 
+
     //Update
-    @PutMapping("/change")
+    @PutMapping
     public Student changeStudent(@RequestBody Student student) {
         return service.changeStudent(student);
     }
 
     //Delete
-    @DeleteMapping("/delete")
-    public void deleteStudent(@RequestParam("id") long id) {
+    @DeleteMapping
+    public void deleteStudent(@RequestParam long id) {
         service.deleteStudent(id);
     }
 

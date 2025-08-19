@@ -18,16 +18,16 @@ public class FacultyService {
 
     private void setDefaultValues() {
         if (facultyRepository.count() == 0) {
-            addFaculty("Griffindoor", "RED");
-            addFaculty("Slizerin", "GREEN");
-            addFaculty("Ravenclaw", "BLUE");
-            addFaculty("Hufflepuff", "BROWN");
+            addFaculty(new Faculty("Griffindoor", "RED"));
+            addFaculty(new Faculty("Slizerin", "GREEN"));
+            addFaculty(new Faculty("Ravenclaw", "BLUE"));
+            addFaculty(new Faculty("Hufflepuff", "BROWN"));
         }
     }
 
     //C
-    public Faculty addFaculty(String name, String color) {
-        return facultyRepository.save(new Faculty(name, color));
+    public Faculty addFaculty(Faculty faculty) {
+        return facultyRepository.save(faculty);
     }
 
     //R
@@ -38,6 +38,8 @@ public class FacultyService {
     public List<Faculty> searchByColor(String color) {
         return facultyRepository.findByColor(color);
     }
+
+
 
     public List<Faculty> getAllFaculty() {
         return facultyRepository.findAll();

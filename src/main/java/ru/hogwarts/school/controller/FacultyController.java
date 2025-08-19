@@ -18,37 +18,39 @@ public class FacultyController {
     }
 
     //Create
-    @PostMapping("/add/{name},{color}")
-    public Faculty addFaculty(@PathVariable("name") String name, @PathVariable("color") String color) {
-        return service.addFaculty(name, color);
+    @PostMapping
+    public Faculty addFaculty(@RequestBody Faculty faculty) {
+        return service.addFaculty(faculty);
     }
 
     //Read
-    @GetMapping("")
+    @GetMapping
     public List<Faculty> getAllFaculty() {
         return service.getAllFaculty();
     }
 
 
-    @GetMapping("/search/id")
+    @GetMapping("id")
     public Faculty findById(@RequestParam("id") long id) {
         return service.findById(id);
     }
 
-    @GetMapping("/search/color")
+
+    @GetMapping("search")
     public List<Faculty> searchByColor(@RequestParam("color") String color) {
         return service.searchByColor(color);
     }
 
+
     //Update
-    @PutMapping("/change/{id}")
+    @PutMapping
     public Faculty changeFaculty(@RequestBody Faculty faculty) {
         return service.changeFaculty(faculty);
     }
 
     //Delete
-    @DeleteMapping("/delete")
-    public void deleteFaculty(long id) {
+    @DeleteMapping
+    public void deleteFaculty(@RequestParam long id) {
         service.deleteFaculty(id);
     }
 

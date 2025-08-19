@@ -28,9 +28,9 @@ public class StudentServiceTest {
         String name = "Dumbledoor";
         int age = 100;
         Student student = new Student(name, age);
-        Assertions.assertEquals(Student.class, (studentService.addStudent(name, age)).getClass());
-        Assertions.assertEquals(name, studentService.addStudent(name, age).getName());
-        Assertions.assertEquals(age, studentService.addStudent(name, age).getAge());
+        Assertions.assertEquals(Student.class, (studentService.addStudent(student)).getClass());
+        Assertions.assertEquals(name, studentService.addStudent(student).getName());
+        Assertions.assertEquals(age, studentService.addStudent(student).getAge());
     }
 
     //READ TEST
@@ -38,7 +38,7 @@ public class StudentServiceTest {
     public void whenAddStudent_GivenFindById_ThenReturnRight() {
         String name = "Dumbledoor";
         int age = 100;
-        long id = studentService.addStudent(name, age).getId();
+        long id = studentService.addStudent(new Student(name, age)).getId();
         Assertions.assertEquals(name, studentService.findById(id).getName());
         Assertions.assertEquals(age, studentService.findById(id).getAge());
     }
@@ -61,7 +61,7 @@ public class StudentServiceTest {
     public void whenAddStudent_GivenSearchByAge_ThenReturnListClass() {
         String name = "Dumbledoor";
         int age = 100;
-        long id = studentService.addStudent(name, age).getId();
+        long id = studentService.addStudent(new Student(name, age)).getId();
         Assertions.assertEquals(ArrayList.class, studentService.searchByAge(age).getClass());
     }
 
@@ -69,7 +69,7 @@ public class StudentServiceTest {
     public void whenAddStudent_GivenGetAllStudent_ThenReturnListClass() {
         String name = "Dumbledoor";
         int age = 100;
-        long id = studentService.addStudent(name, age).getId();
+        long id = studentService.addStudent(new Student(name, age)).getId();
         Assertions.assertEquals(ArrayList.class, studentService.getAllStudent().getClass());
     }
 
@@ -78,7 +78,7 @@ public class StudentServiceTest {
     public void whenAddStudent_GivenChangeStudentRightId_ThenReturnEditedStudent() {
         String name = "Dumbledoor";
         int age = 100;
-        Student student1 = studentService.addStudent(name, age);
+        Student student1 = studentService.addStudent(new Student(name, age));
         long id = student1.getId();
 
         String newName = "VolanDeMort";
@@ -113,7 +113,7 @@ public class StudentServiceTest {
     public void whenAddStudent_GivenDeleteStudentRightId_ThenReturnDeletedStudent() {
         String name = "Dumbledoor";
         int age = 100;
-        Student student = studentService.addStudent(name, age);
+        Student student = studentService.addStudent(new Student( name, age));
         long id = student.getId();
         Student returnedStudent = studentService.deleteStudent(id);
         Assertions.assertEquals(name, returnedStudent.getName());

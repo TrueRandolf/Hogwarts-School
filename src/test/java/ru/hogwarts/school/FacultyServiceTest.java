@@ -28,9 +28,9 @@ public class FacultyServiceTest {
         String name = "Griffenduy";
         String color = "MAGENTA";
         Faculty faculty = new Faculty(name, color);
-        Assertions.assertEquals(Faculty.class, (facultyService.addFaculty(name, color)).getClass());
-        Assertions.assertEquals(name, facultyService.addFaculty(name, color).getName());
-        Assertions.assertEquals(color, facultyService.addFaculty(name, color).getColor());
+        Assertions.assertEquals(Faculty.class, (facultyService.addFaculty(faculty).getClass()));
+        Assertions.assertEquals(name, facultyService.addFaculty(faculty).getName());
+        Assertions.assertEquals(color, facultyService.addFaculty(faculty).getColor());
     }
 
     //READ TEST
@@ -38,7 +38,7 @@ public class FacultyServiceTest {
     public void whenAddFaculty_GivenFindById_ThenReturnRight() {
         String name = "Griffenduy";
         String color = "MAGENTA";
-        long id = facultyService.addFaculty(name, color).getId();
+        long id = facultyService.addFaculty(new Faculty(name, color)).getId();
         Assertions.assertEquals(name, facultyService.findById(id).getName());
         Assertions.assertEquals(color, facultyService.findById(id).getColor());
     }
@@ -61,7 +61,7 @@ public class FacultyServiceTest {
     public void whenAddFaculty_GivenSearchByAge_ThenReturnListClass() {
         String name = "Griffenduy";
         String color = "MAGENTA";
-        long id = facultyService.addFaculty(name, color).getId();
+        long id = facultyService.addFaculty(new Faculty(name, color)).getId();
         Assertions.assertEquals(ArrayList.class, facultyService.searchByColor(color).getClass());
     }
 
@@ -69,16 +69,16 @@ public class FacultyServiceTest {
     public void whenAddFaculty_GivenGetAllFaculty_ThenReturnListClass() {
         String name = "Griffenduy";
         String color = "MAGENTA";
-        long id = facultyService.addFaculty(name, color).getId();
+        long id = facultyService.addFaculty(new Faculty(name, color)).getId();
         Assertions.assertEquals(ArrayList.class, facultyService.getAllFaculty().getClass());
     }
 
     //UPDATE TEST
     @Test
-    public void whenAddfaculty_GivenChangefacultyRightId_ThenReturnEditedfaculty() {
+    public void whenAddFaculty_GivenChangeFacultyRightId_ThenReturnEditedFaculty() {
         String name = "Griffenduy";
         String color = "MAGENTA";
-        Faculty faculty1 = facultyService.addFaculty(name, color);
+        Faculty faculty1 = facultyService.addFaculty(new Faculty(name, color));
         long id = faculty1.getId();
 
         String newName = "RavenCluv";
@@ -94,7 +94,7 @@ public class FacultyServiceTest {
     }
 
     @Test
-    public void whenAddfaculty_GivenChangefacultyWrongId_ThenReturnSchoolException() {
+    public void whenAddfaculty_GivenChangeFacultyWrongId_ThenReturnSchoolException() {
         String name = "Griffenduy";
         String color = "MAGENTA";
         Faculty faculty = new Faculty(name, color);
@@ -110,10 +110,10 @@ public class FacultyServiceTest {
 
     //DELETE TEST
     @Test
-    public void whenAddfaculty_GivenDeletefacultyRightId_ThenReturnDeletedfaculty() {
+    public void whenAddFaculty_GivenDeleteFacultyRightId_ThenReturnDeletedFaculty() {
         String name = "Griffenduy";
         String color = "MAGENTA";
-        Faculty faculty = facultyService.addFaculty(name, color);
+        Faculty faculty = facultyService.addFaculty(new Faculty(name, color));
         long id = faculty.getId();
         Faculty returnedfaculty = facultyService.deleteFaculty(id);
         Assertions.assertEquals(name, returnedfaculty.getName());
@@ -121,7 +121,7 @@ public class FacultyServiceTest {
     }
 
     @Test
-    public void whenAddfaculty_GivenDeletefacultyWrongId_ThenReturnSchoolException() {
+    public void whenAddFaculty_GivenDeleteFacultyWrongId_ThenReturnSchoolException() {
         String name = "Griffenduy";
         String color = "MAGENTA";
         Faculty faculty = new Faculty(name, color);
