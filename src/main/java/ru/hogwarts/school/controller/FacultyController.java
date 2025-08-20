@@ -30,27 +30,27 @@ public class FacultyController {
     }
 
 
-    @GetMapping("id")
-    public Faculty findById(@RequestParam("id") long id) {
+    @GetMapping("{id}")
+    public Faculty findById(@PathVariable("id") long id) {
         return service.findById(id);
     }
 
 
-    @GetMapping("search")
+    @GetMapping(params = "color")
     public List<Faculty> searchByColor(@RequestParam("color") String color) {
         return service.searchByColor(color);
     }
 
 
     //Update
-    @PutMapping
+    @PutMapping("/{id}")
     public Faculty changeFaculty(@RequestBody Faculty faculty) {
         return service.changeFaculty(faculty);
     }
 
     //Delete
-    @DeleteMapping
-    public void deleteFaculty(@RequestParam long id) {
+    @DeleteMapping("/{id}")
+    public void deleteFaculty(@PathVariable long id) {
         service.deleteFaculty(id);
     }
 
