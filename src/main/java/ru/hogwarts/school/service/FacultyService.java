@@ -39,11 +39,14 @@ public class FacultyService {
         return facultyRepository.findByColor(color);
     }
 
-
+    public List<Faculty> searchByParty(String part) {
+        return facultyRepository.searchByPart(part);
+    }
 
     public List<Faculty> getAllFaculty() {
         return facultyRepository.findAll();
     }
+
 
     //U
     public Faculty changeFaculty(Faculty faculty) {

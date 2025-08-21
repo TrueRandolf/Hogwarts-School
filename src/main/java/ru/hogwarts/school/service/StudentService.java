@@ -8,6 +8,7 @@ import ru.hogwarts.school.repository.StudentRepository;
 import java.util.*;
 
 @Service
+
 public class StudentService {
     private final StudentRepository studentRepository;
 
@@ -32,6 +33,11 @@ public class StudentService {
     }
 
     //READ
+
+    public List<Student> getAllStudent() {
+        return studentRepository.findAll();
+    }
+
     public Student findById(Long id) {
         return studentRepository.findById(id).orElseThrow(() -> new NotFoundException("Нет студента c таким id"));
     }
@@ -40,9 +46,10 @@ public class StudentService {
         return studentRepository.findByAge(age);
     }
 
-    public List<Student> getAllStudent() {
-        return studentRepository.findAll();
+    public List<Student> searchByAgeBetween(int ageMin, int ageMax) {
+        return studentRepository.findByAgeBetween(ageMin, ageMax);
     }
+
 
     //UPDATE
     public Student changeStudent(Student student) {
