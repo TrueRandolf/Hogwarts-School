@@ -9,7 +9,7 @@ import java.util.Objects;
 
 @Entity
 
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Faculty {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -20,7 +20,7 @@ public class Faculty {
     private String color;
 
     @OneToMany(mappedBy = "faculty", fetch = FetchType.LAZY)
-    @JsonIgnore
+    //@JsonIgnore
     private List<Student> students;
 
 
