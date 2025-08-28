@@ -1,11 +1,8 @@
 package ru.hogwarts.school.controller;
 
 import org.springframework.web.bind.annotation.*;
-import ru.hogwarts.school.dto.FacultyGetDTO;
-import ru.hogwarts.school.dto.FacultyPostDTO;
-import ru.hogwarts.school.dto.StudentGetDTO;
+import ru.hogwarts.school.dto.*;
 import ru.hogwarts.school.model.Faculty;
-import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.List;
@@ -23,51 +20,46 @@ public class FacultyController {
 
     //Create
     @PostMapping
-    public long addFaculty(@RequestBody FacultyPostDTO facultyPostDTO) {
-        return service.addFaculty(facultyPostDTO.getFacultyFromDTO()).getId();
+    public long addFaculty(@RequestBody FacultyFromDTO facultyFromDTO) {
+        return service.addFaculty(new FacultyMapper().dToS(facultyFromDTO)).getId();
     }
 
     //Read
     @GetMapping
-    public List<FacultyGetDTO> getAllFaculty() {
-        return service.getAllFaculty().stream()
-                .map(FacultyGetDTO::new)
-                .toList();
+    public List<FacultyToDTO> getAllFaculty() {
+        return new FacultyMapper().sToD(service.getAllFaculty());
     }
 
 
     @GetMapping("/{id}")
-    public FacultyGetDTO findById(@PathVariable("id") long id) {
-        return new FacultyGetDTO(service.findById(id));
+    public FacultyToDTO findById(@PathVariable("id") long id) {
+        return new FacultyMapper().sToD(service.findById(id));
     }
 
-    @GetMapping(params = "color")
-    public List<FacultyGetDTO> searchByColor(@RequestParam("color") String color) {
-        return service.searchByColor(color).stream()
-                .map(FacultyGetDTO::new)
-                .toList();
+    //@GetMapping(params = "color")
+    @GetMapping("searchByColor")
+    public List<FacultyToDTO> searchByColor(@RequestParam("color") String color) {
+        return new FacultyMapper().sToD(service.searchByColor(color));
     }
 
-    @GetMapping(params = "part")
-    public List<FacultyGetDTO> searchByPart(@RequestParam("part") String part) {
-        return service.searchByParty(part).stream()
-                .map(FacultyGetDTO::new)
-                .toList();
+    //@GetMapping(params = "part")
+    @GetMapping("searchByPart")
+    public List<FacultyToDTO> searchByPart(@RequestParam("part") String part) {
+        return new FacultyMapper().sToD(service.searchByPart(part));
     }
 
     @GetMapping("/{id}/students")
-    public List<StudentGetDTO> getFacultyStudents(@PathVariable("id") long id) {
-        List<Student> students = service.findById(id).getStudents();
-        return students.stream()
-                .map(StudentGetDTO::new)
-                .toList();
+    public List<StudentToDTO> getFacultyStudents(@PathVariable("id") long id) {
+        return new StudentMapper().sToD(service.findById(id).getStudents());
     }
 
 
     //Update
     @PutMapping("/{id}")
-    public FacultyGetDTO changeFaculty(@RequestBody Faculty faculty) {
-        return new FacultyGetDTO(service.changeFaculty(faculty));
+    public FacultyToDTO changeFaculty(@PathVariable long id, @RequestBody FacultyFromDTO facultyFromDTO) {
+        Faculty faculty = new FacultyMapper().dToS(facultyFromDTO);
+        faculty.setId(id); // Что это? Это - чтобы не засорять JSON лишним полем Id, которое и так вводится в PathVariable. Рутину - роботам
+        return new FacultyMapper().sToD(service.changeFaculty(faculty));
     }
 
     //Delete

@@ -1,7 +1,5 @@
 package ru.hogwarts.school.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 
 import java.util.Objects;
@@ -18,8 +16,7 @@ public class Student {
 
     @JoinColumn(name = "faculty_id")
     @ManyToOne(fetch = FetchType.LAZY)
-    //@JsonBackReference
-    //@JsonIgnore
+
     private Faculty faculty;
 
 

@@ -2,9 +2,7 @@ package ru.hogwarts.school.controller;
 
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
-import ru.hogwarts.school.dto.FacultyGetDTO;
-import ru.hogwarts.school.dto.StudentGetDTO;
-import ru.hogwarts.school.dto.StudentPostDTO;
+import ru.hogwarts.school.dto.*;
 import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.StudentService;
 
@@ -24,51 +22,47 @@ public class StudentController {
 
     //Create
     @PostMapping
-    public long addStudent(@RequestBody StudentPostDTO studentDTO) {
-        return service.addStudent(studentDTO.getStudentFromDTO()).getId();
+    public long addStudent(@RequestBody StudentFromDTO studFromDTO) {
+        return service.addStudent(new StudentMapper().dToS(studFromDTO)).getId();
+
     }
 
 
     //Read
     @GetMapping
-    public List<StudentGetDTO> getAllStudent() {
-        List<Student> students = service.getAllStudent();
-        return students.stream()
-                .map(StudentGetDTO::new)
-                .toList();
+    public List<StudentToDTO> getAllStudent() {
+        return new StudentMapper().sToD(service.getAllStudent());
     }
 
     @GetMapping("/{id}")
-    public StudentGetDTO findById(@PathVariable long id) {
-        return new StudentGetDTO(service.findById(id));
+    public StudentToDTO findById(@PathVariable long id) {
+        return new StudentMapper().sToD(service.findById(id));
     }
 
-    @GetMapping(params = "age")
-    public List<StudentGetDTO> searchByAge(@RequestParam("age") int age) {
-        List<Student> students = service.searchByAge(age);
-        return students.stream()
-                .map(StudentGetDTO::new)
-                .toList();
+    //@GetMapping(params = "age")
+    @GetMapping("searchByAge")
+    public List<StudentToDTO> searchByAge(@RequestParam("age") int age) {
+        return new StudentMapper().sToD((service.searchByAge(age)));
     }
 
-    @GetMapping(params = {"ageMin", "ageMax"})
-    public List<StudentGetDTO> searchByAge(@RequestParam("ageMin") int ageMin,
-                                           @RequestParam("ageMax") int ageMax) {
-        List<Student> students = service.searchByAgeBetween(ageMin, ageMax);
-        return students.stream()
-                .map(StudentGetDTO::new)
-                .toList();
+    //@GetMapping(params = {"ageMin", "ageMax"})
+    @GetMapping("searchBetweenAge")
+    public List<StudentToDTO> searchBetweenAge(@RequestParam("ageMin") int ageMin,
+                                               @RequestParam("ageMax") int ageMax) {
+        return new StudentMapper().sToD(service.searchByAgeBetween(ageMin, ageMax));
     }
 
     @GetMapping("/{id}/faculty")
-    public FacultyGetDTO getStudentFaculty(@PathVariable("id") long id) {
-        return new FacultyGetDTO(service.findById(id).getFaculty());
+    public FacultyToDTO getStudentFaculty(@PathVariable("id") long id) {
+        return new FacultyMapper().sToD(service.findById(id).getFaculty());
     }
 
     //Update
     @PutMapping("/{id}")
-    public StudentGetDTO changeStudent(@PathVariable long id, @RequestBody Student student) {
-        return new StudentGetDTO((service.changeStudent(student)));
+    public StudentToDTO changeStudent(@PathVariable long id, @RequestBody StudentFromDTO studFromDTO) {
+        Student student = new StudentMapper().dToS(studFromDTO);
+        student.setId(id);   // Что это? Это - чтобы не засорять JSON лишним полем Id, которое и так вводится в PathVariable. Рутину - роботам
+        return  new StudentMapper().sToD(service.changeStudent(student));
     }
 
     //Delete
