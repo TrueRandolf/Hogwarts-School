@@ -39,13 +39,11 @@ public class StudentController {
         return new StudentMapper().sToD(service.findById(id));
     }
 
-    //@GetMapping(params = "age")
     @GetMapping("searchByAge")
     public List<StudentToDTO> searchByAge(@RequestParam("age") int age) {
         return new StudentMapper().sToD((service.searchByAge(age)));
     }
 
-    //@GetMapping(params = {"ageMin", "ageMax"})
     @GetMapping("searchBetweenAge")
     public List<StudentToDTO> searchBetweenAge(@RequestParam("ageMin") int ageMin,
                                                @RequestParam("ageMax") int ageMax) {
