@@ -17,11 +17,13 @@ import ru.hogwarts.school.model.Student;
 import ru.hogwarts.school.service.FacultyService;
 import ru.hogwarts.school.service.StudentService;
 
+import java.util.LinkedList;
 import java.util.List;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-public class StudentControllerTestRestTemplateTests {
+
+public class FacultyControllerTestRestTemplateTests {
     @LocalServerPort
     private int port;
 
@@ -44,20 +46,20 @@ public class StudentControllerTestRestTemplateTests {
 
     Student studentOne = new Student();
     Student studentTwo = new Student();
-    Student studentThree = new Student();
     final String nameOne = "Mister One";
     final String nameTwo = "Mister Two";
-    final String nameThree = "Mister Three";
     final int ageOne = 10;
     final int ageTwo = 20;
-    final int ageThree = 30;
 
     Faculty facultyOne = new Faculty();
     Faculty facultyTwo = new Faculty();
+    Faculty facultyThree = new Faculty();
     final String fNameOne = "Faculty One";
     final String fNameTwo = "Faculty Two";
-    final String fColorOne = "Color One";
-    final String fColorTwo = "Color Two";
+    final String fNameThree = "Faculty Three";
+    final String fColorOne = "ColorOne";
+    final String fColorTwo = "ColorTwo";
+    final String fColorThree = "ColorThree";
 
 
     @BeforeEach
@@ -66,6 +68,16 @@ public class StudentControllerTestRestTemplateTests {
         facultyOne.setColor(fColorOne);
         facultyTwo.setName(fNameTwo);
         facultyTwo.setColor(fColorTwo);
+        facultyThree.setName(fNameThree);
+        facultyThree.setColor(fColorThree);
+
+        List<Student> listOne = new LinkedList<>();
+        List<Student> listTwo = new LinkedList<>();
+        listOne.add(studentOne);
+        listTwo.add(studentTwo);
+
+        facultyOne.setStudents(listOne);
+        facultyTwo.setStudents(listTwo);
 
         this.facultyService.addFaculty(facultyOne);
         this.facultyService.addFaculty(facultyTwo);
@@ -78,9 +90,6 @@ public class StudentControllerTestRestTemplateTests {
         studentTwo.setAge(ageTwo);
         studentTwo.setFaculty(facultyTwo);
 
-        studentThree.setName(nameThree);
-        studentThree.setAge(ageThree);
-
         this.studentService.addStudent(studentOne);
         this.studentService.addStudent(studentTwo);
     }
@@ -92,65 +101,66 @@ public class StudentControllerTestRestTemplateTests {
 
         this.facultyService.deleteFaculty(facultyOne.getId());
         this.facultyService.deleteFaculty(facultyTwo.getId());
-
     }
+
 
     //POST Test
     @Test
-    public void addStudentTest() throws Exception {
-        String url = ("http://localhost:" + port + "/student");
+    public void addFacultyTest() throws Exception {
+        String url = ("http://localhost:" + port + "/faculty");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
 
-        Student student = new Student("Mister 100", 1000);
+        Faculty faculty = new Faculty("FacultyTemp", "ColorTemp");
         long returnedId;
 
         ResponseEntity<String> responseEntity = this.testRestTemplate
-                .postForEntity(builder.toUriString(), student, String.class);
+                .postForEntity(builder.toUriString(), faculty, String.class);
         returnedId = Long.parseLong(String.valueOf(responseEntity.getBody()));
 
-        studentService.findById(returnedId);
+        facultyService.findById(returnedId);
         Assertions
                 .assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(studentService.findById(returnedId).getName()).isEqualTo(student.getName());
+                .assertThat(facultyService.findById(returnedId).getName()).isEqualTo(faculty.getName());
         Assertions
-                .assertThat(studentService.findById(returnedId).getAge()).isEqualTo(student.getAge());
-        studentService.deleteStudent(returnedId);
+                .assertThat(facultyService.findById(returnedId).getColor()).isEqualTo(faculty.getColor());
+        facultyService.deleteFaculty(returnedId);
 
     }
 
 
     //GET Tests
     @Test
-    public void getAllStudentTest() throws Exception {
-        String url = ("http://localhost:" + port + "/student");
+    public void getAllFacultyTest() throws Exception {
+        String url = ("http://localhost:" + port + "/faculty");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        ResponseEntity<List<Student>> response = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
+        ResponseEntity<List<Faculty>> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Faculty>>() {
                 });
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
                 .assertThat(response.getBody()).isNotEmpty();
+
     }
 
     @Test
     public void findByIdTestPositive() throws Exception {
-        final long idOne = studentOne.getId();
-        String url = ("http://localhost:" + port + "/student/" + idOne);
+        final long idOne = facultyOne.getId();
+        String url = ("http://localhost:" + port + "/faculty/" + idOne);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        ResponseEntity<Student> response = this.testRestTemplate
-                .getForEntity(builder.toUriString(), Student.class);
+        ResponseEntity<Faculty> response = this.testRestTemplate
+                .getForEntity(builder.toUriString(), Faculty.class);
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(response.getBody()).isEqualTo(studentOne);
+                .assertThat(response.getBody()).isEqualTo(facultyOne);
     }
 
     @Test
     public void findByIdTestNegative() throws Exception {
         final long wrongId = -100L;
-        String url = ("http://localhost:" + port + "/student/" + wrongId);
+        String url = ("http://localhost:" + port + "/faculty/" + wrongId);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         ResponseEntity<String> responseEntity = this.testRestTemplate
                 .getForEntity(builder.toUriString(), String.class);
@@ -158,29 +168,29 @@ public class StudentControllerTestRestTemplateTests {
                 .assertThat(responseEntity.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-    @Test
-    public void searchByAgeTestPositive() throws Exception {
-        String url = ("http://localhost:" + port + "/student/searchByAge");
-        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("age", ageOne);
 
-        ResponseEntity<List<Student>> response = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
+    @Test
+    public void searchByColorTestPositive() throws Exception {
+        String url = ("http://localhost:" + port + "/faculty/searchByColor");
+        UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
+                .queryParam("color", fColorOne);
+        ResponseEntity<List<Faculty>> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Faculty>>() {
                 });
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(response.getBody().get(0)).isEqualTo(studentOne);
+                .assertThat(response.getBody().get(0)).isEqualTo(facultyOne);
     }
 
     @Test
-    public void searchByAgeTestNegative() throws Exception {
-        final int wrongAge = -100;
-        String url = ("http://localhost:" + port + "/student/searchByAge");
+    public void searchByColorTestNegative() throws Exception {
+        final String wrongColor = "----";
+        String url = ("http://localhost:" + port + "/faculty/searchByColor");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("age", wrongAge);
-        List<Student> list = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
+                .queryParam("color", wrongColor);
+        List<Faculty> list = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Faculty>>() {
                 }).getBody();
         Assertions
                 .assertThat(list).isEmpty();
@@ -188,89 +198,86 @@ public class StudentControllerTestRestTemplateTests {
 
 
     @Test
-    public void searchBetweenAgeTestPositive() throws Exception {
-        final int ageMin = ageOne - 1;
-        final int ageMax = ageTwo + 1;
-
-        String url = ("http://localhost:" + port + "/student/searchBetweenAge");
+    public void searchByPartTestPositive() throws Exception {
+        String part = "col";
+        String url = ("http://localhost:" + port + "/faculty/searchByPart");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url)
-                .queryParam("ageMin", ageMin)
-                .queryParam("ageMax", ageMax);
-        ResponseEntity<List<Student>> response = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
+                .queryParam("part", part);
+        ResponseEntity<List<Faculty>> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Faculty>>() {
                 });
 
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(response.getBody().get(0)).isEqualTo(studentOne);
+                .assertThat(response.getBody().get(0)).isEqualTo(facultyOne);
         Assertions
-                .assertThat(response.getBody().get(1)).isEqualTo(studentTwo);
+                .assertThat(response.getBody().get(1)).isEqualTo(facultyTwo);
     }
 
+
     @Test
-    public void getStudentFacultyPositive() throws Exception {
-        final long idOne = studentOne.getId();
-        String url = ("http://localhost:" + port + "/student/" + idOne + "/faculty");
+    public void getFacultyStudentsPositive() throws Exception {
+        final long idOne = facultyOne.getId();
+        String url = ("http://localhost:" + port + "/faculty/" + idOne + "/students");
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        ResponseEntity<Faculty> response = this.testRestTemplate
-                .getForEntity(builder.toUriString(), Faculty.class);
+        ResponseEntity<List<Student>> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.GET, null, new ParameterizedTypeReference<List<Student>>() {
+                });
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(response.getBody()).isEqualTo(studentOne.getFaculty());
+                .assertThat(response.getBody().get(0)).isEqualTo(facultyOne.getStudents().get(0));
     }
 
-    // Update Tests
+    // UPDATE Tests
     @Test
-    public void changeStudentTestPositive() throws Exception {
-        final long id = studentOne.getId();
-        String url = ("http://localhost:" + port + "/student/" + id);
+    public void changeFacultyTestPositive() throws Exception {
+        final long id = facultyOne.getId();
+        String url = ("http://localhost:" + port + "/faculty/" + id);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Student> studentHttpEntity = new HttpEntity<>(studentThree, headers);
+        HttpEntity<Faculty> facultyHttpEntity = new HttpEntity<>(facultyThree, headers);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        ResponseEntity<Student> response
+        ResponseEntity<Faculty> response
                 = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.PUT, studentHttpEntity, Student.class);
-        Student student = response.getBody();
+                .exchange(builder.toUriString(), HttpMethod.PUT, facultyHttpEntity, Faculty.class);
+        Faculty faculty = response.getBody();
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         Assertions
-                .assertThat(student.getId()).isEqualTo(studentOne.getId());
+                .assertThat(faculty.getId()).isEqualTo(facultyOne.getId());
         Assertions
-                .assertThat(student.getName()).isEqualTo(studentThree.getName());
+                .assertThat(faculty.getName()).isEqualTo(facultyThree.getName());
         Assertions
-                .assertThat(student.getAge()).isEqualTo(studentThree.getAge());
+                .assertThat(faculty.getColor()).isEqualTo(facultyThree.getColor());
 
     }
 
     @Test
-    public void changeStudentTestNegative() throws Exception {
+    public void changeFacultyTestNegative() throws Exception {
         final long wrongId = -100L;
-        String url = ("http://localhost:" + port + "/student/" + wrongId);
+        String url = ("http://localhost:" + port + "/faculty/" + wrongId);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        HttpEntity<Student> studentHttpEntity = new HttpEntity<>(studentThree, headers);
+        HttpEntity<Faculty> facultyHttpEntity = new HttpEntity<>(facultyThree, headers);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
-        ResponseEntity<Student> response
+        ResponseEntity<Faculty> response
                 = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.PUT, studentHttpEntity, Student.class);
-        Student student = response.getBody();
+                .exchange(builder.toUriString(), HttpMethod.PUT, facultyHttpEntity, Faculty.class);
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
 
-
-    // Delete Tests
+    // DELETE Tests
     @Test
-    public void deleteStudentTestPositive() throws Exception {
-        final long id = this.studentService.addStudent(studentThree).getId();
-        String url = ("http://localhost:" + port + "/student/" + id);
+    public void deleteFacultyTestPositive() throws Exception {
+        final long id = this.facultyService.addFaculty(facultyThree).getId();
+        String url = ("http://localhost:" + port + "/faculty/" + id);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         // удаляю и жду ответ 200
-        ResponseEntity<Student> response = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.DELETE, null, Student.class);
+        ResponseEntity<Faculty> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.DELETE, null, Faculty.class);
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
         // ищу удалённый и закономерно жду 404
@@ -282,15 +289,16 @@ public class StudentControllerTestRestTemplateTests {
     }
 
     @Test
-    public void deleteStudentTestNegative() throws Exception {
+    public void deleteFacultyTestNegative() throws Exception {
         final long wrongId = -100L;
-        String url = ("http://localhost:" + port + "/student/" + wrongId);
+        String url = ("http://localhost:" + port + "/faculty/" + wrongId);
         UriComponentsBuilder builder = UriComponentsBuilder.fromHttpUrl(url);
         // удаляю и жду 404
-        ResponseEntity<Student> response = this.testRestTemplate
-                .exchange(builder.toUriString(), HttpMethod.DELETE, null, Student.class);
+        ResponseEntity<Faculty> response = this.testRestTemplate
+                .exchange(builder.toUriString(), HttpMethod.DELETE, null, Faculty.class);
         Assertions
                 .assertThat(response.getStatusCode()).isEqualTo(HttpStatus.NOT_FOUND);
     }
+
 
 }
