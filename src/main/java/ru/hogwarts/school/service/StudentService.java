@@ -35,7 +35,7 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository, AvatarRepository avatarRepository) {
         this.studentRepository = studentRepository;
         this.avatarRepository = avatarRepository;
-        setDefaultValues();
+        //setDefaultValues();
     }
 
     private void setDefaultValues() {

@@ -13,7 +13,7 @@ public class FacultyService {
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
-        setDefaultValues();
+        //setDefaultValues();
     }
 
     private void setDefaultValues() {

@@ -24,7 +24,6 @@ public class StudentController {
     @PostMapping
     public long addStudent(@RequestBody StudentFromDTO studFromDTO) {
         return service.addStudent(new StudentMapper().dToS(studFromDTO)).getId();
-
     }
 
 
@@ -39,13 +38,11 @@ public class StudentController {
         return new StudentMapper().sToD(service.findById(id));
     }
 
-    //@GetMapping(params = "age")
     @GetMapping("searchByAge")
     public List<StudentToDTO> searchByAge(@RequestParam("age") int age) {
         return new StudentMapper().sToD((service.searchByAge(age)));
     }
 
-    //@GetMapping(params = {"ageMin", "ageMax"})
     @GetMapping("searchBetweenAge")
     public List<StudentToDTO> searchBetweenAge(@RequestParam("ageMin") int ageMin,
                                                @RequestParam("ageMax") int ageMax) {
@@ -62,7 +59,7 @@ public class StudentController {
     public StudentToDTO changeStudent(@PathVariable long id, @RequestBody StudentFromDTO studFromDTO) {
         Student student = new StudentMapper().dToS(studFromDTO);
         student.setId(id);   // Что это? Это - чтобы не засорять JSON лишним полем Id, которое и так вводится в PathVariable. Рутину - роботам
-        return  new StudentMapper().sToD(service.changeStudent(student));
+        return new StudentMapper().sToD(service.changeStudent(student));
     }
 
     //Delete

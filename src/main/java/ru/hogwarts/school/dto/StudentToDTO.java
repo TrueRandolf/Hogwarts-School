@@ -24,7 +24,7 @@ public class StudentToDTO {
         return age;
     }
 
-    public Long getFacId() {
+    public Long getFacultyId() {
         return facultyId;
     }
 
