@@ -54,6 +54,22 @@ public class StudentController {
         return new FacultyMapper().sToD(service.findById(id).getFaculty());
     }
 
+    @GetMapping("getNumberOfStudents")
+    public Integer getNumberOfStudents() {
+        return service.getNumberStudents();
+    }
+
+    @GetMapping("getAverageAge")
+    public float getAverageAge() {
+        return service.getAverageAge();
+    }
+
+    @GetMapping("getLastFive")
+    public List<StudentToDTO> getLastFive() {
+        return new StudentMapper().sToD((service.getLastFive()));
+    }
+
+
     //Update
     @PutMapping("/{id}")
     public StudentToDTO changeStudent(@PathVariable long id, @RequestBody StudentFromDTO studFromDTO) {

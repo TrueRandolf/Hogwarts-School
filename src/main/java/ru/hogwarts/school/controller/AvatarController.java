@@ -7,6 +7,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.dto.AvatarMapper;
+import ru.hogwarts.school.dto.AvatarToDTO;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.StudentService;
 
@@ -16,6 +18,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.List;
 
 @RestController
 @RequestMapping("/avatar")
@@ -31,7 +34,7 @@ public class AvatarController {
     @PostMapping(value = "/{studentId}/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public ResponseEntity<String> uploadAvatar(@PathVariable Long studentId,
                                                @RequestParam MultipartFile avatar) throws IOException {
-        if (avatar.getSize() > 1024 * 480 ){
+        if (avatar.getSize() > 1024 * 480) {
             return ResponseEntity.badRequest().body("Размер изображения слишком большой");
         }
         service.uploadAvatar(studentId, avatar);
@@ -62,6 +65,11 @@ public class AvatarController {
         }
     }
 
+    @GetMapping()
+    public List<AvatarToDTO> getAll(@RequestParam("page") int page,
+                                    @RequestParam("size") int size) {
+        return new AvatarMapper().aToD(service.getAllAvatar(page, size));
+    }
 
     //U
 
