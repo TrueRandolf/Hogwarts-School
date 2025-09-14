@@ -2,8 +2,13 @@ package ru.hogwarts.school.service;
 
 import jakarta.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import ru.hogwarts.school.dto.AvatarMapper;
+import ru.hogwarts.school.dto.AvatarToDTO;
 import ru.hogwarts.school.exceptions.NotFoundException;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.model.Faculty;
@@ -19,6 +24,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static java.nio.file.StandardOpenOption.CREATE_NEW;
 
@@ -71,6 +77,18 @@ public class StudentService {
         return studentRepository.findByAgeBetween(ageMin, ageMax);
     }
 
+    public Integer getNumberStudents() {
+        return studentRepository.getNumberOfStudents();
+    }
+
+    public float getAverageAge() {
+        return studentRepository.getAverageAge();
+    }
+
+    public List<Student> getLastFive() {
+        return studentRepository.getLastFiveById();
+    }
+
 
     //UPDATE
     public Student changeStudent(Student student) {
@@ -115,6 +133,13 @@ public class StudentService {
     public Avatar findAvatar(long studentId) {
         return avatarRepository.findByStudentId(studentId).orElseThrow(() -> new NotFoundException("Не найден аватар для студента c таким id"));
     }
+
+
+    public List<Avatar> getAllAvatar(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return avatarRepository.findAll(pageable).getContent();
+    }
+
 
     // C
     public void uploadAvatar(Long studentId, MultipartFile avatarFile) throws IOException {
