@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.hogwarts.school.dto.*;
 import ru.hogwarts.school.model.Student;
+import ru.hogwarts.school.service.InfoService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
@@ -14,6 +15,7 @@ import java.util.List;
 public class StudentController {
 
     private final StudentService service;
+
 
     public StudentController(StudentService service) {
         this.service = service;

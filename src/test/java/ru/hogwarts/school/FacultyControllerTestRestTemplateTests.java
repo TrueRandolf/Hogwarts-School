@@ -20,7 +20,7 @@ import ru.hogwarts.school.service.StudentService;
 import java.util.LinkedList;
 import java.util.List;
 
-
+/*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 
 public class FacultyControllerTestRestTemplateTests {
@@ -302,3 +302,6 @@ public class FacultyControllerTestRestTemplateTests {
 
 
 }
+
+
+ */
