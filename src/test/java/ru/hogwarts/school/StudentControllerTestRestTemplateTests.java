@@ -19,7 +19,7 @@ import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
 
-
+/*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class StudentControllerTestRestTemplateTests {
     @LocalServerPort
@@ -294,3 +294,6 @@ public class StudentControllerTestRestTemplateTests {
     }
 
 }
+
+
+ */

@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import ru.hogwarts.school.dto.AvatarMapper;
 import ru.hogwarts.school.dto.AvatarToDTO;
+import ru.hogwarts.school.dto.StudentMapper;
+import ru.hogwarts.school.dto.StudentToDTO;
 import ru.hogwarts.school.model.Avatar;
 import ru.hogwarts.school.service.StudentService;
 
@@ -70,6 +72,7 @@ public class AvatarController {
                                     @RequestParam("size") int size) {
         return new AvatarMapper().aToD(service.getAllAvatar(page, size));
     }
+
 
     //U
 
