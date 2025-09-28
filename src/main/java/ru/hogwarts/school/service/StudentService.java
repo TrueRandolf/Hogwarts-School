@@ -41,9 +41,6 @@ public class StudentService {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
-    // логгирование уровня INFO выполнено только для public методов
-    // логгирование уровня ERROR выполнено только для public методов, в которых возможно исключение
-    // логгирование уровня DEBUG выполнено только для private методов
 
 
     private void setDefaultValues() {
@@ -122,7 +119,6 @@ public class StudentService {
     }
 
     //DELETE
-    // Или лишнего навертел, или: два раза проверь - один раз удали.
     public Student deleteStudent(long id) {
         logger.info("Was invoked method for delete student by id: {}", id);
         Optional<Student> objStudent = studentRepository.findById(id);
@@ -132,7 +128,6 @@ public class StudentService {
             deleteCouple(id);
             return objStudent.get();
         }
-        // Если только студент - то его и удаляю. Зачем удалять несуществующий аватар?
         if (objStudent.isPresent()) {
             studentRepository.deleteById(id);
             return objStudent.get();
@@ -142,7 +137,6 @@ public class StudentService {
     }
 
     @Transactional
-    // а вот и совместное удаление пары
     private void deleteCouple(long id) {
         logger.debug("Was invoked private method for delete couple student-avatar");
         long aid = avatarRepository.findByStudentId(id).get().getId(); // устал JPA объяснять, что удлять надо по Id студента. Ему было строго пофиг

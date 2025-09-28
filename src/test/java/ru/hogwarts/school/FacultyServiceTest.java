@@ -11,7 +11,7 @@ import ru.hogwarts.school.repository.FacultyRepository;
 import ru.hogwarts.school.service.FacultyService;
 
 import java.util.ArrayList;
-/*
+
 @SpringBootTest
 @Transactional
 public class FacultyServiceTest {
@@ -135,6 +135,3 @@ public class FacultyServiceTest {
     }
 
 }
-
-
- */

@@ -4,59 +4,35 @@ package ru.hogwarts.school;
 import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.boot.test.mock.mockito.SpyBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import ru.hogwarts.school.controller.FacultyController;
-import ru.hogwarts.school.controller.StudentController;
 import ru.hogwarts.school.dto.FacultyMapper;
-import ru.hogwarts.school.dto.StudentMapper;
+import ru.hogwarts.school.exceptions.NotFoundException;
 import ru.hogwarts.school.model.Faculty;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.repository.AvatarRepository;
-import ru.hogwarts.school.repository.FacultyRepository;
-import ru.hogwarts.school.repository.StudentRepository;
 import ru.hogwarts.school.service.FacultyService;
-import ru.hogwarts.school.service.StudentService;
 
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Optional;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-/*
-@WebMvcTest
+
+@WebMvcTest(FacultyController.class)
 public class FacultyControllerWebMVCTests {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private StudentRepository studentRepository;
-
-    @MockBean
-    private AvatarRepository avatarRepository;
-
-    @MockBean
-    private FacultyRepository facultyRepository;
-
-    @SpyBean
-    private StudentService service;
-
-    @SpyBean
     private FacultyService facultyService;
-
-    @InjectMocks
-    private FacultyController facultyController;
 
 
     //
@@ -116,15 +92,12 @@ public class FacultyControllerWebMVCTests {
         JSONObject facultyObject = new JSONObject();
         facultyObject.put("name", nameOne);
         facultyObject.put("color", colorOne);
-
-        when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyOne);
-
+        when(facultyService.addFaculty(any(Faculty.class))).thenReturn(facultyOne);
         mockMvc.perform(MockMvcRequestBuilders
                         .post("/faculty")
                         .content(facultyObject.toString())
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
-                .andDo(MockMvcResultHandlers.print())
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$").value(idOne));
     }
@@ -132,7 +105,7 @@ public class FacultyControllerWebMVCTests {
 
     @Test
     public void findByIdFacultyTestPositive() throws Exception {
-        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(facultyOne));
+        when(facultyService.findById(any(Long.class))).thenReturn(facultyOne);
         mockMvc.perform(MockMvcRequestBuilders
                         .get(("/faculty/" + idOne))
                         .content(String.valueOf(idOne))
@@ -146,7 +119,7 @@ public class FacultyControllerWebMVCTests {
 
     @Test
     public void findByIdFacultyTestNegative() throws Exception {
-        when(studentRepository.findById(any(Long.class))).thenReturn(Optional.empty());
+        when(facultyService.findById(any(Long.class))).thenThrow(NotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders
                         .get(("/faculty/" + idOne))
                         .content(String.valueOf(idOne))
@@ -162,7 +135,7 @@ public class FacultyControllerWebMVCTests {
         setFacultyTwo();
         setFacultyList();
         JSONObject facultyObject = new JSONObject();
-        when(facultyRepository.findAll()).thenReturn(facultyList);
+        when(facultyService.getAllFaculty()).thenReturn(facultyList);
         mockMvc.perform(MockMvcRequestBuilders
                         .get("/faculty")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -179,7 +152,7 @@ public class FacultyControllerWebMVCTests {
     @Test
     public void searchByColorFacultyTest() throws Exception {
         facultyList.add(facultyOne);
-        when(facultyRepository.findByColor(any(String.class))).thenReturn(facultyList);
+        when(facultyService.searchByColor(any(String.class))).thenReturn(facultyList);
         mockMvc.perform(MockMvcRequestBuilders
                         .get(("/faculty/searchByColor"))
                         .param("color", String.valueOf(colorOne))
@@ -194,14 +167,13 @@ public class FacultyControllerWebMVCTests {
     @Test
     public void searchByPartTest() throws Exception {
         facultyList.add(facultyOne);
-        when(facultyRepository.searchByPart(any(String.class))).thenReturn(facultyList);
+        when(facultyService.searchByPart(any(String.class))).thenReturn(facultyList);
         mockMvc.perform(MockMvcRequestBuilders
                         .get(("/faculty/searchByPart"))
                         .param("part", String.valueOf("lll"))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                //.andDo(MockMvcResultHandlers.print())
                 .andExpect(jsonPath("$[0].id").value(idOne))
                 .andExpect(jsonPath("$[0].name").value(nameOne))
                 .andExpect(jsonPath("$[0].color").value(colorOne));
@@ -214,7 +186,7 @@ public class FacultyControllerWebMVCTests {
         setFacultyOne();
         System.out.println("facultyOne = " + new FacultyMapper().sToD(facultyOne));
         System.out.println("facultyOne = " + facultyOne.getStudents());
-        when(facultyRepository.findById(any(Long.class))).thenReturn(Optional.of(facultyOne));
+        when(facultyService.findById(any(Long.class))).thenReturn(facultyOne);
         mockMvc.perform(MockMvcRequestBuilders
                         .get(("/faculty/" + idOne + "/students"))
                         .content(String.valueOf(idOne))
@@ -234,14 +206,14 @@ public class FacultyControllerWebMVCTests {
         facultyObject.put("name", nameTwo);
         facultyObject.put("color", colorTwo);
 
-        when(facultyRepository.findById(any(long.class))).thenReturn(Optional.of(facultyOne));
+        when(facultyService.findById(any(long.class))).thenReturn(facultyOne);
         mockMvc.perform(MockMvcRequestBuilders
                         .put(("/faculty/" + idOne))
                         .content(String.valueOf(facultyObject.toString()))
                         .contentType(MediaType.APPLICATION_JSON)
                         .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk());
-        when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyThree);
+        when(facultyService.changeFaculty(any(Faculty.class))).thenReturn(facultyThree);
         mockMvc.perform(MockMvcRequestBuilders
                         .put(("/faculty/" + idOne))
                         .content(String.valueOf(facultyObject.toString()))
@@ -258,8 +230,7 @@ public class FacultyControllerWebMVCTests {
         JSONObject facultyObject = new JSONObject();
         facultyObject.put("name", nameTwo);
         facultyObject.put("color", colorTwo);
-        when(facultyRepository.findById(any(long.class))).thenReturn(Optional.empty());
-        when(facultyRepository.save(any(Faculty.class))).thenReturn(facultyThree);
+        when(facultyService.changeFaculty(any(Faculty.class))).thenThrow(NotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders
                         .put(("/faculty/" + idOne))
                         .content(String.valueOf(facultyObject.toString()))
@@ -272,7 +243,7 @@ public class FacultyControllerWebMVCTests {
 
     @Test
     public void deleteFacultyTestPositive() throws Exception {
-        when(facultyRepository.findById(any(long.class))).thenReturn(Optional.of(facultyOne));
+        when(facultyService.deleteFaculty(any(long.class))).thenReturn(facultyOne);
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(("/faculty/" + idOne))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -282,7 +253,7 @@ public class FacultyControllerWebMVCTests {
 
     @Test
     public void deleteFacultyTestNegative() throws Exception {
-        when(facultyRepository.findById(any(long.class))).thenReturn(Optional.empty());
+        when(facultyService.deleteFaculty(any(long.class))).thenThrow(NotFoundException.class);
         mockMvc.perform(MockMvcRequestBuilders
                         .delete(("/faculty/" + idOne))
                         .contentType(MediaType.APPLICATION_JSON)
@@ -290,8 +261,5 @@ public class FacultyControllerWebMVCTests {
                 .andExpect(status().is(404));
     }
 
-
 }
 
-
- */

@@ -19,9 +19,6 @@ public class FacultyService {
     }
 
     private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
-    // логгирование уровня INFO выполнено только для public методов
-    // логгирование уровня ERROR выполнено только для public методов, в которых возможно исключение
-    // логгирование уровня DEBUG выполнено только для private методов
 
 
     private void setDefaultValues() {

@@ -18,19 +18,6 @@ public class InfoController {
         return service.getInfoPort();
     }
 
-//    Буквально, допустимо было выполнить так:
-//    @Value("${server.port}")
-//    private String serverPort;
-//
-//    @GetMapping("/port")
-//    public String getPort() {
-//        return serverPort;
-//    }
-//    Но выполнил по классике, с сервисами и моделями, на вырост.
-//    Вдруг потребуется вывести еще информацию по приложению.
-//    Либо отдать её одним JSONом.
-//    Доп челлендж с @PostConstruct
-
 }
 
 
