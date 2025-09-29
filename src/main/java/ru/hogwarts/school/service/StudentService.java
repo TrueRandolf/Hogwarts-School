@@ -37,7 +37,6 @@ public class StudentService {
     public StudentService(StudentRepository studentRepository, AvatarRepository avatarRepository) {
         this.studentRepository = studentRepository;
         this.avatarRepository = avatarRepository;
-        //setDefaultValues();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
@@ -101,6 +100,44 @@ public class StudentService {
     public List<Student> getLastFive() {
         logger.info("Was invoked method for get last 5 students");
         return studentRepository.getLastFiveById();
+    }
+
+
+    public List<String> getStudentsByLetter(String letter) {
+        logger.info("Was invoked method for get students list by alphabetical order by name first letter");
+
+        String modLetter = letter.trim();
+        if (!modLetter.isEmpty()) {
+            modLetter = modLetter
+                    .substring(0, 1)
+                    .toUpperCase();
+        } else modLetter = " ";
+        final String subString = modLetter;  // тут чего-то умное, от лямбды, пусть так
+
+        return (studentRepository.findAll())
+                .stream()
+                .parallel()
+                .map(Student::getName)
+                .map(String::toUpperCase)
+                .filter(s -> s.startsWith(subString))
+                .sorted()
+                .toList();
+    }
+
+
+    public float getAverAgeByStream() {
+        logger.info("Was invoked method for get average age by stream method");
+        OptionalDouble averAge;
+        averAge = (studentRepository.findAll())
+                .stream()
+                .parallel()
+                .map(Student::getAge)
+                .mapToInt(Integer::intValue)
+                .average();
+        if (averAge.isPresent()) {
+            return (float) averAge.getAsDouble();
+        } else return -1F;
+
     }
 
 

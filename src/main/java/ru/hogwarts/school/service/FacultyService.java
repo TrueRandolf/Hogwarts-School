@@ -15,7 +15,6 @@ public class FacultyService {
 
     public FacultyService(FacultyRepository facultyRepository) {
         this.facultyRepository = facultyRepository;
-        //setDefaultValues();
     }
 
     private static final Logger logger = LoggerFactory.getLogger(FacultyService.class);
