@@ -4,7 +4,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.bind.annotation.GetMapping;
 import ru.hogwarts.school.dto.*;
 import ru.hogwarts.school.model.Student;
-import ru.hogwarts.school.service.InfoService;
 import ru.hogwarts.school.service.StudentService;
 
 import java.util.List;
@@ -70,6 +69,18 @@ public class StudentController {
     public List<StudentToDTO> getLastFive() {
         return new StudentMapper().sToD((service.getLastFive()));
     }
+
+    @GetMapping("getStudentsByLetter")  // произвольно меняю задание, не А, а Н, потому что нет в моей таблице А!
+    public List<String> getStudentsByLetter(@RequestParam("letter") String letter){
+        //return new StudentMapper().sToD(service.getStudentsByLetter(letter));
+        return service.getStudentsByLetter(letter);
+    }
+
+    @GetMapping("getAverAgeByStream")
+    public float getAverAgeByStream(){
+        return service.getAverAgeByStream();
+    }
+
 
 
     //Update
