@@ -199,6 +199,20 @@ public class StudentControllerWebMVCTests {
     }
 
     @Test
+    public void getStudentParallelPrint() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/print-parallel"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    public void getStudentSynchronizedPrint() throws Exception {
+        mockMvc.perform(MockMvcRequestBuilders
+                        .get("/student/print-synchronized"))
+                .andExpect(status().isOk());
+    }
+
+    @Test
     public void changeStudentTestPositive() throws Exception {
         setStudentThree();
         JSONObject studentObject = new JSONObject();

@@ -41,6 +41,7 @@ public class StudentService {
 
     private static final Logger logger = LoggerFactory.getLogger(StudentService.class);
 
+    private int count = 1;
 
     private void setDefaultValues() {
         logger.debug("Was invoked private method for create default filling table STUDENT");
@@ -140,6 +141,76 @@ public class StudentService {
 
     }
 
+
+    public void printParallel() {
+        logger.info("Was invoked method for print all students in parallel threads");
+        final long delay = 100;
+        List<String> names = getNameFromStudents();
+
+
+        printParName("Student 1: {" + names.get(0), delay);
+        printParName("Student 2: {" + names.get(1), delay);
+
+        new Thread(() -> {
+            printParName("Student 3: {" + names.get(2), delay);
+            printParName("Student 4: {" + names.get(3), delay);
+        }).start();
+
+        new Thread(() -> {
+            printParName("Student 5: {" + names.get(4), delay);
+            printParName("Student 6: {" + names.get(5), delay);
+        }).start();
+    }
+
+    private void printParName(String name, long delay) {
+        System.out.println(name + "} выведен в потоке: " + Thread.currentThread().getName());
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException ignored) {
+        }
+    }
+
+    public void printSynchronized() {
+        logger.info("Was invoked method for print all students in synchronized parallel threads");
+        final long delay = 100;
+        List<String> names = getNameFromStudents();
+
+        printSynchroName("1:{" + names.get(0), delay);
+        printSynchroName("2:{" + names.get(1), delay);
+
+        new Thread(() ->
+        {
+            printSynchroName("3:{" + names.get(2), delay);
+            printSynchroName("4:{" + names.get(3), delay);
+        }).start();
+
+        new Thread(() ->
+        {
+            printSynchroName("5:{" + names.get(4), delay);
+            printSynchroName("6:{" + names.get(5), delay);
+        }).start();
+    }
+
+    private void printSynchroName(String name, long delay) {
+        synchronized (StudentService.class) {
+            System.out.println("Синхронизированный счетчик = " + count + " Student " + name + "} выведен в потоке: " + Thread.currentThread().getName());
+            count++;
+        }
+        if (count > 6) count = 1;
+        try {
+            Thread.sleep(delay);
+        } catch (InterruptedException ignored) {
+        }
+
+    }
+
+    private List<String> getNameFromStudents() {
+        return (studentRepository.findAll())
+                .stream()
+                .map(Student::getName)
+                .limit(6)
+                .toList();
+    }
 
     //UPDATE
     public Student changeStudent(Student student) {
