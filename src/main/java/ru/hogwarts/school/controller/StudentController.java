@@ -81,6 +81,15 @@ public class StudentController {
         return service.getAverAgeByStream();
     }
 
+    @GetMapping("/print-parallel")
+    public void printParallel(){
+        service.printParallel();
+    }
+
+    @GetMapping("/print-synchronized")
+    public void printSynchronized(){
+        service.printSynchronized();
+    }
 
 
     //Update
